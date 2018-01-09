@@ -47,7 +47,7 @@ class AddItemField extends Component {
     const onSubmit = this.props.onSubmit;
 
     onSubmit(value);
-    
+    this.setState({ value: '' });
   }
 
   render() {
