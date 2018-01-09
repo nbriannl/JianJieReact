@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import 'semantic-ui-css/semantic.min.css';
 import "./App.css";
-import { Button, Card, List, Input, Checkbox, Icon } from 'semantic-ui-react'
+import { Card, List, Input, Checkbox, Icon } from 'semantic-ui-react'
 
 class ToDoItem extends Component {
   constructor(props) {
@@ -26,6 +26,42 @@ class ToDoItem extends Component {
   }
 }
 
+
+class AddItemField extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { value: '' };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({ value: event.target.value });
+  }
+
+  handleSubmit(event) {
+    // alert(this.state.value);
+    event.preventDefault();
+    const value = this.state.value;
+    const onSubmit = this.props.onSubmit;
+
+    onSubmit(value);
+    
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <Input fluid action='Add Item' placeholder='Insert Item To Do...'
+          value={this.state.value}
+          onChange={this.handleChange}
+        />
+      </form>
+    );
+  }
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -41,7 +77,8 @@ class App extends Component {
         },
       ],
     };
-    this.onCheckboxChange = this.onCheckboxChange.bind(this);    
+    this.onCheckboxChange = this.onCheckboxChange.bind(this);
+    this.onFormSubmit = this.onFormSubmit.bind(this);
   }
 
   render() {
@@ -52,14 +89,14 @@ class App extends Component {
             <Card.Header>To Do List <Icon name='list' /></Card.Header>
             <Card.Meta>A list of things to do</Card.Meta>
             <Card.Description>This is a list of things to do.</Card.Description>
-            <Input fluid action='Add Item' placeholder='Insert Item To Do...' />
+            <AddItemField onSubmit={this.onFormSubmit} />
             <List divided relaxed>
               {this.state.todos.map((todo, index) => {
                 return (
-                  <ToDoItem 
+                  <ToDoItem
                     todo={todo}
                     index={index}
-                    onChange={this.onCheckboxChange} 
+                    onChange={this.onCheckboxChange}
                   />
                 );
               })}
@@ -70,13 +107,20 @@ class App extends Component {
     )
   }
 
+  onFormSubmit(item) {
+    // alert(item + ' is being added!');
+    let todos = this.state.todos;
+    todos.push({ text: item, checked: false })
+    this.setState({ todos: todos });
+  }
+
   onCheckboxChange(value, index) {
     // get old value
     let todos = this.state.todos;
     // get value of specific todo we want
     let todo = todos[index];
     // modify the old values with our new values
-    todos[index] = {text: todo.text, checked: value };
+    todos[index] = { text: todo.text, checked: value };
     // set the new todos as the new state.
     this.setState({ todos: todos });
 
