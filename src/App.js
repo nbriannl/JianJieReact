@@ -29,7 +29,10 @@ class ToDoItem extends Component {
 class AddItemField extends Component {
   constructor(props) {
     super(props);
-    this.state = { value: '' };
+    this.state = {
+      value: '',
+      isValidValue: true,
+    };
 
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -44,14 +47,24 @@ class AddItemField extends Component {
     event.preventDefault();
     const value = this.state.value;
     const onSubmit = this.props.onSubmit;
-    onSubmit(value);
-    this.setState({ value: '' });
+    if (value.trim() === '') {
+      this.setState({ isValidValue: false });
+    } else {
+      if (this.state.isValidValue === false) {
+        this.setState({ isValidValue: true });
+      }
+      onSubmit(value);
+      this.setState({ value: '' });
+    }
   }
 
   render() {
+    const isValidValue = this.state.isValidValue;
+    let error = isValidValue ? false : true;
+
     return (
       <form onSubmit={this.handleSubmit}>
-        <Input fluid action='Add Item' placeholder='Insert Item To Do...'
+        <Input fluid error={error} action='Add Item' placeholder='Insert Item To Do...'
           value={this.state.value}
           onChange={this.handleCheckboxChange}
         />
