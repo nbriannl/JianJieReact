@@ -37,12 +37,13 @@ body,
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
-.Aligner-item {
-  max-width: 85%;
-}
-
-.ui.card, .toDoCard {
+.Aligner-item{
   width: 85%;
+}
+
+.ui.card{
+  width: initial;
 }

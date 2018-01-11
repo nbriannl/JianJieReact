@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import 'semantic-ui-css/semantic.min.css';
 import "./App.css";
-import { Card, List, Input, Checkbox, Icon } from 'semantic-ui-react'
+import { Button, Card, List, Input, Checkbox, Icon } from 'semantic-ui-react'
 
 class ToDoItem extends Component {
   constructor(props) {
@@ -17,6 +17,9 @@ class ToDoItem extends Component {
           checked={this.props.todo.checked}
           onChange={this.handleCheckboxChange}
         />
+        <List.Content floated='right'>
+          <Button>Add</Button>
+        </List.Content>
       </List.Item>
     );
   }
@@ -24,6 +27,17 @@ class ToDoItem extends Component {
   handleCheckboxChange(event, data) {
     this.props.onChange(data.checked, this.props.index)
   }
+}
+
+function EmptyToDoListItem(props) {
+  return (
+    <List.Item>
+      <Checkbox
+        label='Empty list! Add an item.'
+        disabled
+      />
+    </List.Item>
+  )
 }
 
 class AddItemField extends Component {
@@ -41,21 +55,21 @@ class AddItemField extends Component {
   handleFieldChange(event) {
     event.preventDefault();
     this.setState(
-      { value: event.target.value }, 
-      function() {
+      { value: event.target.value },
+      function () {
         this.checkFieldValueValid();
       }
     );
   }
 
   checkFieldValueValid() {
-    console.log("this.state.value:" + this.state.value);    
+    console.log("this.state.value:" + this.state.value);
     const originalString = this.state.value;
     const checkString = this.state.value.replace(/\s/g, "");
-    console.log("checkString = \'" + checkString +'\'');        
+    console.log("checkString = \'" + checkString + '\'');
     console.log(checkString.length);
 
-    if (originalString.length != 0 && checkString.length <= 0) {
+    if (originalString.length !== 0 && checkString.length <= 0) {
       this.setState({ isValidValue: false });
     } else {
       this.setState({ isValidValue: true });
@@ -93,19 +107,11 @@ class AddItemField extends Component {
   }
 }
 
-class App extends Component {
+class ToDoList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       todos: [
-        {
-          text: "apple",
-          checked: false,
-        },
-        {
-          text: "orange",
-          checked: false,
-        },
       ],
     };
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
@@ -113,24 +119,33 @@ class App extends Component {
   }
 
   render() {
+    const isTodoListEmpty = (this.state.todos.length === 0) ? true : false;
+    let listItems = null;
+    if (isTodoListEmpty) {
+      listItems = <EmptyToDoListItem />
+    } else {
+      listItems = this.state.todos.map((todo, index) => {
+        return (
+          <ToDoItem
+            todo={todo}
+            index={index}
+            key={index + 'tomato'}
+            onChange={this.handleCheckboxChange}
+          />
+        );
+      })
+    }
+
     return (
-      <div className="App Aligner">
-        <Card color='red' className='Aligner-item toDoCard'>
+      <div className="Aligner-item" >
+        <Card color='red' >
           <Card.Content>
             <Card.Header>To Do List <Icon name='list' /></Card.Header>
             <Card.Meta>A list of things to do</Card.Meta>
             <Card.Description>This is a list of things to do.</Card.Description>
             <AddItemField onSubmit={this.handleItemSubmit} />
             <List divided relaxed>
-              {this.state.todos.map((todo, index) => {
-                return (
-                  <ToDoItem
-                    todo={todo}
-                    index={index}
-                    onChange={this.handleCheckboxChange}
-                  />
-                );
-              })}
+              {listItems}
             </List>
           </Card.Content>
         </Card>
@@ -155,6 +170,18 @@ class App extends Component {
     // set the new todos as the new state.
     this.setState({ todos: todos });
 
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App Aligner">
+        <ToDoList />
+        <br />
+        <ToDoList />
+      </div>
+    )
   }
 }
 
