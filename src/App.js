@@ -7,6 +7,7 @@ class ToDoItem extends Component {
   constructor(props) {
     super(props)
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    this.handleItemDelete = this.handleItemDelete.bind(this);
   }
 
   render() {
@@ -22,7 +23,10 @@ class ToDoItem extends Component {
               />
             </Grid.Column>
             <Grid.Column width={1}>
-              <Button negative circular size='tiny' icon='remove circle' />
+              <Button
+                negative circular size='tiny' icon='remove circle'
+                onClick={this.handleItemDelete}
+              />
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -30,7 +34,12 @@ class ToDoItem extends Component {
     );
   }
 
+  handleItemDelete(event, data) {
+    this.props.onDelete(this.props.index);
+  }
+
   handleCheckboxChange(event, data) {
+    //corresponds to TodoList.handleCheckboxChange(value, index) 
     this.props.onChange(data.checked, this.props.index)
   }
 }
@@ -69,11 +78,11 @@ class AddItemField extends Component {
   }
 
   checkFieldValueValid() {
-    console.log("this.state.value:" + this.state.value);
+    //console.log("this.state.value:" + this.state.value);
     const originalString = this.state.value;
     const checkString = this.state.value.replace(/\s/g, "");
-    console.log("checkString = \'" + checkString + '\'');
-    console.log(checkString.length);
+    //console.log("checkString = \'" + checkString + '\'');
+    //console.log(checkString.length);
 
     if (originalString.length !== 0 && checkString.length <= 0) {
       this.setState({ isValidValue: false });
@@ -122,6 +131,7 @@ class ToDoList extends Component {
     };
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleItemSubmit = this.handleItemSubmit.bind(this);
+    this.handleItemDelete = this.handleItemDelete.bind(this);
   }
 
   render() {
@@ -137,6 +147,7 @@ class ToDoList extends Component {
             index={index}
             key={index + 'tomato'}
             onChange={this.handleCheckboxChange}
+            onDelete={this.handleItemDelete}
           />
         );
       })
@@ -144,7 +155,7 @@ class ToDoList extends Component {
 
     return (
       <div className="Aligner-item" >
-        <Card color='red' >
+        <Card color={this.props.cardColor} >
           <Card.Content>
             <Card.Header>To Do List <Icon name='list' /></Card.Header>
             <Card.Meta>A list of things to do</Card.Meta>
@@ -156,6 +167,20 @@ class ToDoList extends Component {
         </Card>
       </div>
     )
+  }
+
+  handleItemDelete(index) {
+    console.log('handleItemDeleteFunction');
+    // get old value
+    let todos = this.state.todos;
+    // get value of specific todo to delete
+    let todoToRemove = todos[index]
+    // modify the old value by remove the specfic value
+    if (index > -1) {
+      todos.splice(index, 1);
+    }
+    // set the new todos as new state
+    this.setState({ todos: todos });
   }
 
   handleItemSubmit(item) {
@@ -182,9 +207,9 @@ class App extends Component {
   render() {
     return (
       <div className="App Aligner">
-        <ToDoList />
+        <ToDoList cardColor='green' />
         <br />
-        <ToDoList />
+        <ToDoList cardColor='yellow'/>
       </div>
     )
   }
