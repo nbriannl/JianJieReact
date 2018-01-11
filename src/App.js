@@ -40,14 +40,22 @@ class AddItemField extends Component {
 
   handleFieldChange(event) {
     event.preventDefault();
-    this.setState({ value: event.target.value });
+    this.setState(
+      { value: event.target.value }, 
+      function() {
+        this.checkFieldValueValid();
+      }
+    );
+  }
 
+  checkFieldValueValid() {
     console.log("this.state.value:" + this.state.value);    
+    const originalString = this.state.value;
     const checkString = this.state.value.replace(/\s/g, "");
     console.log("checkString = \'" + checkString +'\'');        
     console.log(checkString.length);
 
-    if (checkString.length <= 0) {
+    if (originalString.length != 0 && checkString.length <= 0) {
       this.setState({ isValidValue: false });
     } else {
       this.setState({ isValidValue: true });
