@@ -34,12 +34,24 @@ class AddItemField extends Component {
       isValidValue: true,
     };
 
-    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    this.handleFieldChange = this.handleFieldChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleCheckboxChange(event) {
+  handleFieldChange(event) {
+    event.preventDefault();
     this.setState({ value: event.target.value });
+
+    console.log("this.state.value:" + this.state.value);    
+    const checkString = this.state.value.replace(/\s/g, "");
+    console.log("checkString = \'" + checkString +'\'');        
+    console.log(checkString.length);
+
+    if (checkString.length <= 0) {
+      this.setState({ isValidValue: false });
+    } else {
+      this.setState({ isValidValue: true });
+    }
   }
 
   handleSubmit(event) {
@@ -66,7 +78,7 @@ class AddItemField extends Component {
       <form onSubmit={this.handleSubmit}>
         <Input fluid error={error} action='Add Item' placeholder='Insert Item To Do...'
           value={this.state.value}
-          onChange={this.handleCheckboxChange}
+          onChange={this.handleFieldChange}
         />
       </form>
     );
