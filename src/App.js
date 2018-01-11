@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import 'semantic-ui-css/semantic.min.css';
 import "./App.css";
-import { Button, Card, List, Input, Checkbox, Icon } from 'semantic-ui-react'
+import { Button, Card, List, Input, Checkbox, Icon, Grid } from 'semantic-ui-react'
 
 class ToDoItem extends Component {
   constructor(props) {
@@ -12,14 +12,20 @@ class ToDoItem extends Component {
   render() {
     return (
       <List.Item>
-        <Checkbox
-          label={this.props.todo.text}
-          checked={this.props.todo.checked}
-          onChange={this.handleCheckboxChange}
-        />
-        <List.Content floated='right'>
-          <Button>Add</Button>
-        </List.Content>
+        <Grid columns={2}>
+          <Grid.Row>
+            <Grid.Column width={15} verticalAlign='middle'>
+              <Checkbox
+                label={this.props.todo.text}
+                checked={this.props.todo.checked}
+                onChange={this.handleCheckboxChange}
+              />
+            </Grid.Column>
+            <Grid.Column width={1}>
+              <Button negative circular size='tiny' icon='remove circle' />
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </List.Item>
     );
   }
@@ -142,7 +148,6 @@ class ToDoList extends Component {
           <Card.Content>
             <Card.Header>To Do List <Icon name='list' /></Card.Header>
             <Card.Meta>A list of things to do</Card.Meta>
-            <Card.Description>This is a list of things to do.</Card.Description>
             <AddItemField onSubmit={this.handleItemSubmit} />
             <List divided relaxed>
               {listItems}
